@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC 
+"-//Apache Software Foundation//DTD Struts Configuration 1.3//EN" 
+"http://jakarta.apache.org/struts/dtds/struts-config_1_3.dtd">
+
+<struts-config>
+
+	<form-beans>
+		<form-bean
+            name="loginBean"
+            type="fjs.com.Dto.T001Dto"/>
+        <form-bean
+        	name="searchBean"
+        	type="fjs.com.Dto.T002Dto"/>
+        <form-bean
+        	name="editBean"
+        	type="fjs.com.Dto.T003Dto"/>
+	</form-beans>
+	<global-forwards>
+        <forward
+        	name="T001"
+        	path="/pages/T001.jsp"/>
+    </global-forwards>
+    <action-mappings>
+            <!-- Default "Welcome" action -->
+            <!-- Forwards to Welcome.jsp -->
+        <action
+        	input="/pages/T001.jsp"
+           	path="/T001"
+            type="fjs.com.action.T001"
+            validate="true"
+            name="loginBean"
+			scope="request">
+            <forward name="success" path="/T002.do">
+				
+			</forward>
+            <forward name="fail" path="/pages/T001.jsp"/>
+        </action>
+		
+		 <action
+        	path="/T002"
+        	type="fjs.com.action.T002"
+        	name="searchBean"
+        	scope="request">
+        	<forward name="T002" path="/pages/T002.jsp"/>
+        	<forward name="T003" path="/T003.do"/>
+        </action>
+		
+		<action
+        	input="/pages/T003.jsp"
+        	path="/T003"
+        	type="fjs.com.action.T003"
+        	name="editBean"
+        	scope="request">
+        	<forward name="T003" path="/pages/T003.jsp"/>
+        </action>
+	</action-mappings>
+
+</struts-config>
