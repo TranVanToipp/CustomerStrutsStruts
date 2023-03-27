@@ -122,22 +122,41 @@ public class T002 extends Action {
 	*/
 	private void processSearch(HttpServletRequest request, HttpServletResponse response, String name, String sex, String birthdayFrom, String birthdayTo, String page) {
 	    T002Dao daoSearch = new T002Dao();
-	    List<T002Dto> resultSearch = daoSearch.getDataSearch(name, sex, birthdayFrom, birthdayTo);
+	    List<T002Dto> searchResults = daoSearch.getDataSearch(name, sex, birthdayFrom, birthdayTo);
 	    int recordsPerPage = 5;
-	    int startIndex = (Integer.parseInt(page) - 1) * recordsPerPage;
-	    int endIndex = startIndex + recordsPerPage;
-	    int totalRecords = resultSearch.size();
+	    int currentPage = 1;
+	    int startIndex = 0;
+	    int endIndex = 0;
+	    int totalRecords = searchResults.size();
 	    int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
-	    List<T002Dto> resultPaginated = resultSearch.subList(startIndex, Math.min(endIndex, totalRecords));
-	    if (resultPaginated.size() == 0) {
-	    	request.setAttribute("buttonDelete", resultPaginated);
+	    
+	    try {
+	        currentPage = Integer.parseInt(page);
+	    } catch (NumberFormatException e) {
+	        // Xử lý ngoại lệ khi giá trị của biến page không hợp lệ
 	    }
-	    request.setAttribute("ListSearch", resultPaginated);
-	    request.setAttribute("currentPage", page);
+	    
+	    if (currentPage <= 0 || currentPage > totalPages) {
+	        // Xử lý trường hợp giá trị của biến page không hợp lệ
+	        currentPage = 1;
+	    }
+	    
+	    startIndex = (currentPage - 1) * recordsPerPage;
+	    endIndex = Math.min(startIndex + recordsPerPage, totalRecords);
+	    
+	    List<T002Dto> paginatedResults = searchResults.subList(startIndex, endIndex);
+	    
+	    if (paginatedResults.size() == 0) {
+	        request.setAttribute("buttonDelete", paginatedResults);
+	    }
+	    
+	    request.setAttribute("ListSearch", paginatedResults);
+	    request.setAttribute("currentPage", currentPage);
 	    request.setAttribute("recordsPerPage", recordsPerPage);
 	    request.setAttribute("totalRecords", totalRecords);
-	    request.setAttribute("totalPages", totalPages);  
+	    request.setAttribute("totalPages", totalPages);
 	}
+
 	
 	
 	/**
